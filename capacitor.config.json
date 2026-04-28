@@ -1,0 +1,8 @@
+{
+  "appId": "com.schoolbell.app",
+  "appName": "SchoolBell",
+  "webDir": "out",
+  "server": {
+    "androidScheme": "https"
+  }
+}
