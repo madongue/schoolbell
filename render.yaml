@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: SchoolBell Backend
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    env:
+      - key: PORT
+        value: "3000"
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        value: https://fwnxaglqcslbxsywokbl.supabase.co
+      # IMPORTANT: SUPABASE_SERVICE_ROLE_KEY must be set manually in the
+      # Render dashboard environment variables for security.
+      # See: https://dashboard.render.com/services
+    healthCheckPath: /api/health
+
