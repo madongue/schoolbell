@@ -28,8 +28,8 @@ app.post('/api/auth/signup', async (req, res) => {
   try {
     const { email, password, full_name, school_id } = req.body;
 
-    if (!email || !password || !full_name) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!email || !password || !full_name || !school_id) {
+      return res.status(400).json({ error: 'Missing required fields: email, password, full_name, school_id' });
     }
 
     // Create user via Supabase Auth
@@ -49,7 +49,7 @@ app.post('/api/auth/signup', async (req, res) => {
           id: data.user.id,
           email,
           full_name,
-          school_id: school_id || null,
+          school_id: school_id,
           role: 'teacher',
         },
       ]);
