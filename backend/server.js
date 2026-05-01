@@ -8,19 +8,43 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Validate environment variables
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+console.log('Environment Check:');
+console.log('- SUPABASE_URL:', SUPABASE_URL ? '✓ Set' : '✗ MISSING');
+console.log('- SUPABASE_SERVICE_ROLE_KEY:', SUPABASE_SERVICE_ROLE_KEY ? '✓ Set' : '✗ MISSING');
+console.log('- NODE_ENV:', process.env.NODE_ENV);
+console.log('- PORT:', PORT);
+
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('\n❌ CRITICAL ERROR: Missing required environment variables!');
+  console.error('Required variables:');
+  console.error('  - SUPABASE_URL');
+  console.error('  - SUPABASE_SERVICE_ROLE_KEY');
+  console.error('\nPlease set these in your Render service environment variables.');
+  process.exit(1);
+}
+
 // Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Health check
+// Health check endpoint - includes configuration status
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'SchoolBell Backend is running' });
+  res.json({ 
+    status: 'ok',
+    message: 'SchoolBell Backend is running',
+    config: {
+      supabase_url_configured: !!SUPABASE_URL,
+      supabase_key_configured: !!SUPABASE_SERVICE_ROLE_KEY,
+      environment: process.env.NODE_ENV
+    }
+  });
 });
 
 // === AUTH ROUTES ===
